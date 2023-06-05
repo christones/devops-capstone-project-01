@@ -107,13 +107,12 @@ def read_accounts():
 
 
 
-
-
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
+
 @app.route("/accounts/account_id", methods=["PUT"])
-def read_accounts():
+def update_accounts():
     app.logger.info("Request to update an account")
     check_content_type("application/json")
     account = Account.find(account_id)
@@ -136,16 +135,22 @@ def read_accounts():
 
    
 
-
-
-    
-
-
 ######################################################################
 # DELETE AN ACCOUNT
 ######################################################################
 
-# ... place you code here to DELETE an account ...
+@app.route("/accounts/account_id", methods=["DELETE"])
+def delete_accounts():
+    app.logger.info("Request to delete an account")
+    check_content_type("application/json")
+    account = Account.find(account_id)
+    account.delete()
+    acc = Account.find(account_id)
+    location_url = "/"  # Remove once get_accounts has been implemented
+        return make_response(
+            jsonify(acc), status.HTTP_204_NO_CONTENT, {"Location": location_url}
+        )
+
 
 
 ######################################################################
