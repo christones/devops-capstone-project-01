@@ -97,7 +97,7 @@ def read_accounts():
             jsonify(account), status.HTTP_404_NOT_FOUND, {"Location": location_url}
         )
 
-    if account != "":
+    if account != "":  # account found 
         message = account.serialize()
         location_url = "/"  # Remove once get_accounts has been implemented
         return make_response(
@@ -112,8 +112,33 @@ def read_accounts():
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
+@app.route("/accounts/account_id", methods=["PUT"])
+def read_accounts():
+    app.logger.info("Request to update an account")
+    check_content_type("application/json")
+    account = Account.find(account_id)
+    if account != "": # account found 
+        #edited_account = account.deserialize()
+        #request.get_json(edited_account.find_by_name)
+        account.update("New account name")
+        message = account.serialize()
+        location_url = "/"  # Remove once get_accounts has been implemented
+        return make_response(
+            jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+        )
+    
+    if account == "":
+        location_url = "/"  # Remove once get_accounts has been implemented
+        return make_response(
+            jsonify(account), status.HTTP_404_NOT_FOUND, {"Location": location_url}
+        )
 
-# ... place you code here to UPDATE an account ...
+
+   
+
+
+
+    
 
 
 ######################################################################
