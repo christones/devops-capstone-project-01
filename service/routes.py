@@ -85,24 +85,19 @@ def list_accounts():
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
+@app.route("/accounts/<int:account_id>", methods=["GET"])
+def read_accounts(account_id):
+    """
+    Reads an Account
+    This endpoint will read an Account based the account_id that is requested
+    """
+    app.logger.info("Request to read an Account with id: %s", account_id)
 
-@app.route("/accounts/account_id", methods=["GET"])
-def read_accounts():
-    app.logger.info("Request to read an account")
-    check_content_type("application/json")
     account = Account.find(account_id)
-    if account == "":
-        location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(account), status.HTTP_404_NOT_FOUND, {"Location": location_url}
-        )
+    if not account:
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
 
-    if account != "":  # account found 
-        message = account.serialize()
-        location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(message), status.HTTP_200_OK, {"Location": location_url}
-        )
+    return account.serialize(), status.HTTP_200_OK
    
 
 
