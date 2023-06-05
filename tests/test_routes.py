@@ -125,10 +125,12 @@ class TestAccountService(TestCase):
 
     # ADD YOUR TEST CASES HERE ...
     def test_list_accounts(self):
-        """ it should list the accounts """
-        resp = self.client.get("/accounts")
+        """It should Get a list of Accounts"""
+        self._create_accounts(5)
+        resp = self.client.get(BASE_URL)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertNoEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
 
     def test_read_an_account(self):
         """It should Read a single Account"""
@@ -142,13 +144,7 @@ class TestAccountService(TestCase):
 
     def test_update_account(self):
         """ it should update any account """
-        account = AccountFactory()
         resp = self.client.put("/accounts/account_id")
-        response = self.client.put(
-            BASE_URL,
-            json=account.deserialize(),
-            content_type="application/json"
-        )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -156,3 +152,9 @@ class TestAccountService(TestCase):
         """ it should delete an account """
         resp = self.client.delete("/accounts/account_id")
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+
+    def test_get_account_not_found(self):
+        """It should not Read an Account that is not found"""
+        resp = self.client.get(f"{BASE_URL}/0")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)

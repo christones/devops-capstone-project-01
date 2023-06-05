@@ -64,20 +64,15 @@ def create_accounts():
 def list_accounts():
     """
     List all Accounts
-    This endpoint will create an Account based the data in the body that is posted
+    This endpoint will list all Accounts
     """
-    app.logger.info("Request to list  Accounts")
-    check_content_type("application/json")
+    app.logger.info("Request to list Accounts")
+
     accounts = Account.all()
-    location_url = "/"  # Remove once get_accounts has been implemented
-    return make_response(
-        jsonify(accounts), status.HTTP_200_OK, {"Location": location_url}
-    )
-    if accounts = []:
-        location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(accounts), status.HTTP_200_OK, {"Location": location_url}
-        )
+    account_list = [account.serialize() for account in accounts]
+
+    app.logger.info("Returning [%s] accounts", len(account_list))
+    return jsonify(account_list), status.HTTP_200_OK
 
 
 
@@ -111,7 +106,7 @@ def update_accounts():
     app.logger.info("Request to update an account")
     check_content_type("application/json")
     account = Account.find(account_id)
-    if account != "": # account found 
+    if account : # account found 
         #edited_account = account.deserialize()
         #request.get_json(edited_account.find_by_name)
         account.update("New account name")
@@ -121,7 +116,7 @@ def update_accounts():
             jsonify(message), status.HTTP_200_OK, {"Location": location_url}
         )
     
-    if account == "":
+    if not account :
         location_url = "/"  # Remove once get_accounts has been implemented
         return make_response(
             jsonify(account), status.HTTP_404_NOT_FOUND, {"Location": location_url}
@@ -142,7 +137,7 @@ def delete_accounts():
     account.delete()
     acc = Account.find(account_id)
     location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
+    return make_response(
             jsonify(acc), status.HTTP_204_NO_CONTENT, {"Location": location_url}
         )
 
