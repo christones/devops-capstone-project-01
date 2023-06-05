@@ -41,7 +41,7 @@ jobs:
       - name: Running Nose Test cases 
         run: nosetests -v --with-spec --spec-color --with-coverage --cover-package=service
         env:
-          DATABASE_URI: "postgresql://postgres:{password}@{service}:{port}/{database}"
+          DATABASE_URI: "postgresql://postgres:nopass@postgres:5432/christonesdb"
           
 
 
