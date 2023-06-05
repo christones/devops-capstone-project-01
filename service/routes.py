@@ -66,7 +66,7 @@ def list_accounts():
     List all Accounts
     This endpoint will create an Account based the data in the body that is posted
     """
-    app.logger.info("Request to create an Account")
+    app.logger.info("Request to list  Accounts")
     check_content_type("application/json")
     accounts = Account.all()
     location_url = "/"  # Remove once get_accounts has been implemented
@@ -86,7 +86,27 @@ def list_accounts():
 # READ AN ACCOUNT
 ######################################################################
 
-# ... place you code here to READ an account ...
+@app.route("/accounts/account_id", methods=["GET"])
+def read_accounts():
+    app.logger.info("Request to read an account")
+    check_content_type("application/json")
+    account = Account.find(account_id)
+    if account == "":
+        location_url = "/"  # Remove once get_accounts has been implemented
+        return make_response(
+            jsonify(account), status.HTTP_404_NOT_FOUND, {"Location": location_url}
+        )
+
+    if account != "":
+        message = account.serialize()
+        location_url = "/"  # Remove once get_accounts has been implemented
+        return make_response(
+            jsonify(message), status.HTTP_200_OK, {"Location": location_url}
+        )
+   
+
+
+
 
 
 ######################################################################
