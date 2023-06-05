@@ -64,20 +64,15 @@ def create_accounts():
 def list_accounts():
     """
     List all Accounts
-    This endpoint will create an Account based the data in the body that is posted
+    This endpoint will list all Accounts
     """
-    app.logger.info("Request to list  Accounts")
-    check_content_type("application/json")
+    app.logger.info("Request to list Accounts")
+
     accounts = Account.all()
-    location_url = "/"  # Remove once get_accounts has been implemented
-    return make_response(
-        jsonify(accounts), status.HTTP_200_OK, {"Location": location_url}
-    )
-    if accounts = []:
-        location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(accounts), status.HTTP_200_OK, {"Location": location_url}
-        )
+    account_list = [account.serialize() for account in accounts]
+
+    app.logger.info("Returning [%s] accounts", len(account_list))
+    return jsonify(account_list), status.HTTP_200_OK
 
 
 
@@ -85,24 +80,19 @@ def list_accounts():
 ######################################################################
 # READ AN ACCOUNT
 ######################################################################
+@app.route("/accounts/<int:account_id>", methods=["GET"])
+def read_accounts(account_id):
+    """
+    Reads an Account
+    This endpoint will read an Account based the account_id that is requested
+    """
+    app.logger.info("Request to read an Account with id: %s", account_id)
 
-@app.route("/accounts/account_id", methods=["GET"])
-def read_accounts():
-    app.logger.info("Request to read an account")
-    check_content_type("application/json")
     account = Account.find(account_id)
-    if account == "":
-        location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(account), status.HTTP_404_NOT_FOUND, {"Location": location_url}
-        )
+    if not account:
+        abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
 
-    if account != "":  # account found 
-        message = account.serialize()
-        location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(message), status.HTTP_200_OK, {"Location": location_url}
-        )
+    return account.serialize(), status.HTTP_200_OK
    
 
 
@@ -110,27 +100,22 @@ def read_accounts():
 ######################################################################
 # UPDATE AN EXISTING ACCOUNT
 ######################################################################
+@app.route("/accounts/<int:account_id>", methods=["PUT"])
+def update_accounts(account_id):
+    """
+    Update an Account
+    This endpoint will update an Account based on the posted data
+    """
+    app.logger.info("Request to update an Account with id: %s", account_id)
 
-@app.route("/accounts/account_id", methods=["PUT"])
-def update_accounts():
-    app.logger.info("Request to update an account")
-    check_content_type("application/json")
     account = Account.find(account_id)
-    if account != "": # account found 
-        #edited_account = account.deserialize()
-        #request.get_json(edited_account.find_by_name)
-        account.update("New account name")
-        message = account.serialize()
-        location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(message), status.HTTP_200_OK, {"Location": location_url}
-        )
-    
-    if account == "":
-        location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(account), status.HTTP_404_NOT_FOUND, {"Location": location_url}
-        )
+    if not account:
+       abort(status.HTTP_404_NOT_FOUND, f"Account with id [{account_id}] could not be found.")
+
+    account.deserialize(request.get_json())
+    account.update()
+
+    return account.serialize(), status.HTTP_200_OK
 
 
    
@@ -139,17 +124,17 @@ def update_accounts():
 # DELETE AN ACCOUNT
 ######################################################################
 
-@app.route("/accounts/account_id", methods=["DELETE"])
-def delete_accounts():
-    app.logger.info("Request to delete an account")
-    check_content_type("application/json")
+@app.route("/accounts/<int:account_id>", methods=["DELETE"])
+def delete_accounts(account_id):
+    """
+    Delete an Account
+    This endpoint will delete an Account based on the account_id that is requested
+    """
+    app.logger.info("Request to delete an Account with id: %s", account_id)
     account = Account.find(account_id)
-    account.delete()
-    acc = Account.find(account_id)
-    location_url = "/"  # Remove once get_accounts has been implemented
-        return make_response(
-            jsonify(acc), status.HTTP_204_NO_CONTENT, {"Location": location_url}
-        )
+    if account:
+        account.delete()
+    return "", status.HTTP_204_NO_CONTENT
 
 
 
