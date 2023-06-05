@@ -138,8 +138,15 @@ class TestAccountService(TestCase):
 
     def test_update_account(self):
         """ it should update any account """
+        account = AccountFactory()
         resp = self.client.put("/accounts/account_id")
+        response = self.client.put(
+            BASE_URL,
+            json=account.deserialize(),
+            content_type="application/json"
+        )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_account(self):
         """ it should delete an account """
