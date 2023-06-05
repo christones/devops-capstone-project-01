@@ -60,8 +60,26 @@ def create_accounts():
 ######################################################################
 # LIST ALL ACCOUNTS
 ######################################################################
+@app.route("/accounts", methods=["GET"])
+def list_accounts():
+    """
+    List all Accounts
+    This endpoint will create an Account based the data in the body that is posted
+    """
+    app.logger.info("Request to create an Account")
+    check_content_type("application/json")
+    accounts = Account.all()
+    location_url = "/"  # Remove once get_accounts has been implemented
+    return make_response(
+        jsonify(accounts), status.HTTP_200_OK, {"Location": location_url}
+    )
+    if accounts = []:
+        location_url = "/"  # Remove once get_accounts has been implemented
+        return make_response(
+            jsonify(accounts), status.HTTP_200_OK, {"Location": location_url}
+        )
 
-# ... place you code here to LIST accounts ...
+
 
 
 ######################################################################
