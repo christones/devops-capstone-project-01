@@ -18,7 +18,7 @@ spec:
         app: accounts
     spec:
       containers:
-      - image: us.icr.io/sn-labs-elobochris/accounts:1
+      - image: christones
         name: accounts
         resources: {}
 
