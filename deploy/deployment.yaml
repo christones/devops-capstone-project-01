@@ -20,9 +20,7 @@ spec:
       containers:
       - image: us.icr.io/sn-labs-elobochris/accounts:1
         name: accounts
-        resources: 
-           service:
-             app: accounts
+        resources: {}
 
         env:
           - name: DATABASE_HOST
@@ -42,3 +40,4 @@ spec:
               secretKeyRef:
                 name: postgresql
                 key: database-user
+status: {}
